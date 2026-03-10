@@ -18,7 +18,7 @@ This document describes the integration between the game side and Game Center (G
 
 ## 2. Interaction Sequence Diagram
 
-![Interaction Sequence Diagram](./images/pp.png)
+![Interaction Sequence Diagram](./pp.png)
 
 ## 3. Integration Flow Overview
 

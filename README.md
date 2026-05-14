@@ -432,6 +432,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
     "groupId": "1000",  // Group ID, default DEF, optional; required when isGroupTrace=1
     "isGroupTrace": 0,  // 0=No tracking (default), 1=Tracking (must set groupId)
     "isDemo": 0,  // Is demo: 0=No 1=Yes, required
+    "limitConfigId": co2, // 现红配置，no required
     "gameInfo": {
         "category": "0",  // Game category ID, required
         "providerId": "1",  // Game provider ID, required

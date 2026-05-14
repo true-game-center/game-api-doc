@@ -194,7 +194,8 @@ This document describes the integration between the game side and Game Center (G
   "params": {
     "a0": "1111111",  // Root agent
     "userId": 123123,  // User ID
-    "currency": "GOLD"  // Currency: GOLD=free, VND/USD=real money
+    "currency": "GOLD",  // Currency: GOLD=free, VND/USD=real money
+    "gameInfo": {} // gameInfo object
   }
 }
 ```

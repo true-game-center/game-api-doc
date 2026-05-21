@@ -433,6 +433,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
     "isGroupTrace": 0,  // 0=No tracking (default), 1=Tracking (must set groupId)
     "isDemo": 0,  // Is demo: 0=No 1=Yes, required
     "limitConfigId": co2, // 现红配置，no required
+    "ext":  { }, // 透传参数，no required
     "gameInfo": {
         "category": "0",  // Game category ID, required
         "providerId": "1494326540744264616",  // 1494326540744264616 is h5games，Game provider ID, required

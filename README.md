@@ -104,13 +104,13 @@ This document describes the integration between the game side and Game Center (G
     "gameId": "181818",  // Game ID
     "score": 999.00,  // Score/points
     "transactionId": "23424324324",  // Transaction ID
-    "opType": "debit",  // debit / credit / return (cancel-refund)
+    "opType": "debit",  // debit / credit / return (cancel-refund) / gift
     "currency": "GOLD"  // Currency: GOLD=free, VND/USD=real money
   }
 }
 ```
 
-(opType: debit / credit / return for cancel-refund)
+(opType: debit / credit / return for cancel-refund / gift for direct bonus credit. `gift` is mapped to internal opType `3`; `score` must be greater than 0.)
 
 **Response Body**
 

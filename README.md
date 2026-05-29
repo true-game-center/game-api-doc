@@ -222,7 +222,7 @@ This document describes the integration between the game side and Game Center (G
 ### 4.5 Recent User Game Win/Loss Statistics
 
 - **Method:** `POST`
-- **Path:** `/oapi/game-order/getUserRecentGameWinLossStat`
+- **Path:** `/oapi/game-order-collection/getUserRecentGameWinLossStat`
 
 Returns the last 5 games played by a user from `game_order_collection`, then groups each game's settled records into win and lose buckets. Each bucket includes the net payout difference for the last 15 minutes and last 24 hours.
 

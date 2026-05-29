@@ -1,8 +1,8 @@
 # Game Center Integration Guide
 
 **Target Audience:** Client developers, Server developers, QA  
-**Last Updated:** 2026-03-04  
-**Document Version:** V1.0.0
+**Last Updated:** 2026-05-29  
+**Document Version:** V1.1.0
 
 ---
 
@@ -216,6 +216,64 @@ This document describes the integration between the game side and Game Center (G
   "error": null
 }
 ```
+
+---
+
+### 4.5 Recent User Game Win/Loss Statistics
+
+- **Method:** `POST`
+- **Path:** `/oapi/game-order/getUserRecentGameWinLossStat`
+
+Returns the last 5 games played by a user from `game_order_collection`, then groups each game's settled records into win and lose buckets. Each bucket includes the net payout difference for the last 15 minutes and last 24 hours.
+
+**Calculation Rules**
+
+| Field | Rule |
+|-------|------|
+| Last played games | Top 5 distinct `game_id` ordered by `MAX(bet_time)` desc |
+| Win bucket | `order_status = 1` |
+| Lose bucket | `order_status = 3` |
+| Time windows | Based on `bet_time`, relative to request processing time |
+| Difference amount | `settle_score - bet_score`; converted by the A0 currency unit before summing |
+
+**Request Body**
+
+```json
+{
+  "a0": 11012184,
+  "userId": 11011234
+}
+```
+
+`kolUserId` can be used instead of `a0`. `userid` and `user_id` are also accepted as aliases for `userId`.
+
+**Response Body**
+
+```json
+{
+  "success": true,
+  "errCode": "0",
+  "errMessage": "success",
+  "data": {
+    "games": [
+      {
+        "gameId": 1497254068404215812,
+        "lastBetTime": "2026-05-27T17:30:57",
+        "win": {
+          "last15MinutesDiffAmount": 110.53100000,
+          "last24HoursDiffAmount": 322.78800000
+        },
+        "lose": {
+          "last15MinutesDiffAmount": -2.47100000,
+          "last24HoursDiffAmount": -9.30400000
+        }
+      }
+    ]
+  }
+}
+```
+
+If a game has no settled win or lose records in a window, the corresponding amount is `0`.
 
 ---
 

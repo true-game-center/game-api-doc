@@ -2,7 +2,7 @@
 
 **Target Audience:** Client developers, Server developers, QA  
 **Last Updated:** 2026-06-04  
-**Document Version:** V1.2.0
+**Document Version:** V1.3.0
 
 ---
 
@@ -15,6 +15,7 @@ This document describes the integration between the game side and Game Center (G
 - Get user info and balance
 - Deduct / credit points
 - Game record query
+- A0 service config management
 
 ## 2. Interaction Sequence Diagram
 
@@ -27,6 +28,12 @@ This document describes the integration between the game side and Game Center (G
 3. **Get balance:** The game server requests the user balance from Game Center.
 4. **Credit operations:** When the user plays for points, the game server sends deduct/credit requests to Game Center.
 5. **Exit game:** When the user exits the game, the game server sends an exit request to Game Center.
+
+---
+
+## Related Documents
+
+- [A0 Game Service Config API](./game-a0-service-config.md)
 
 ---
 

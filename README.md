@@ -491,6 +491,8 @@ The following APIs are implemented and exposed by the game side for Game Center 
     "isGroupTrace": 0,  // 0=No tracking (default), 1=Tracking (must set groupId)
     "isDemo": 0,  // Is demo: 0=No 1=Yes, required
     "limitConfigId": co2, // 现红配置，no required
+    "dataset": "default", // 透传给游戏服务方的数据集，no required
+    "enableJackpot": 1, // 是否启用 JackPot：0 不启用，1 启用，no required
     "ext":  { }, // 透传参数，no required
     "gameInfo": {
         "category": "0",  // Game category ID, required

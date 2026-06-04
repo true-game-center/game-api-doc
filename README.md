@@ -1,8 +1,8 @@
 # Game Center Integration Guide
 
 **Target Audience:** Client developers, Server developers, QA  
-**Last Updated:** 2026-05-29  
-**Document Version:** V1.1.0
+**Last Updated:** 2026-06-04  
+**Document Version:** V1.2.0
 
 ---
 
@@ -274,6 +274,65 @@ Returns the last 5 games played by a user from `game_order_collection`, then gro
 ```
 
 If a game has no settled win or lose records in a window, the corresponding amount is `0`.
+
+---
+
+### 4.6 User Game Order Metrics
+
+- **Method:** `POST`
+- **Path:** `/oapi/game-order-collection/user-metrics`
+
+Returns game order metrics for one user from `game_order_collection`. Amounts are grouped by `kol_user_id` and `currency`, converted by the A0 currency unit, then summed as diamond/score values.
+
+**Calculation Rules**
+
+| Field | Rule |
+|-------|------|
+| `totalBetScore` | Game participation diamond total = `sum(bet_score)` |
+| `totalValidBetScore` | Game valid diamond total = `sum(valid_bet_score)` |
+| `totalRewardScore` | Game reward diamond total = `sum(settle_score)` |
+| `totalWinLossScore` | Game total win/loss = `totalBetScore - totalRewardScore`; positive means platform win |
+| `totalRewardRate` | Game reward rate = `totalRewardScore / totalBetScore`; returns `0` when `totalBetScore` is `0` |
+| `rechargeWithdrawDiffToTotalWinLoss` | Recharge-withdraw diff to total win/loss. Returns `null` because recharge/withdraw data is not stored in `game_order_collection` |
+| `validBetToRechargeMultiple` | Valid diamond to recharge multiple. Returns `null` because recharge data is not stored in `game_order_collection` |
+| `validBetToRechargeWithdrawDiffMultiple` | Valid diamond to recharge-withdraw diff multiple. Returns `null` because recharge/withdraw data is not stored in `game_order_collection` |
+| `validBetToWithdrawMultiple` | Valid diamond to withdraw multiple. Returns `null` because withdraw data is not stored in `game_order_collection` |
+| `gameGrossRoi` | Total win/loss to recharge, also called game gross ROI. Returns `null` because recharge data is not stored in `game_order_collection` |
+| `contributionRatio` | Total win/loss to withdraw, also called contribution ratio. Returns `null` because withdraw data is not stored in `game_order_collection` |
+
+**Request Body**
+
+```json
+{
+  "userId": 11011234
+}
+```
+
+`userid` and `user_id` are also accepted as aliases for `userId`.
+
+**Response Body**
+
+```json
+{
+  "success": true,
+  "errCode": "0",
+  "errMessage": "success",
+  "data": {
+    "userId": 11011234,
+    "totalBetScore": 10000.00000000,
+    "totalValidBetScore": 9200.00000000,
+    "totalWinLossScore": 1500.00000000,
+    "totalRewardScore": 8500.00000000,
+    "totalRewardRate": 0.850000,
+    "rechargeWithdrawDiffToTotalWinLoss": null,
+    "validBetToRechargeMultiple": null,
+    "validBetToRechargeWithdrawDiffMultiple": null,
+    "validBetToWithdrawMultiple": null,
+    "gameGrossRoi": null,
+    "contributionRatio": null
+  }
+}
+```
 
 ---
 

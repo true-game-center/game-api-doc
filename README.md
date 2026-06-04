@@ -624,7 +624,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
     "limitConfigId": co2, // 现红配置，no required
     "dataset": "default", // 透传给游戏服务方的数据集，no required
     "enableJackpot": 1, // 是否启用 JackPot：0 不启用，1 启用，no required
-    "ext":  { }, // 透传参数，no required
+    "ext": "||1499486369695664870|74|||null_4030004|", // 透传字符串参数，no required
     "gameInfo": {
         "category": "0",  // Game category ID, required
         "providerId": "1494326540744264616",  // 1494326540744264616 is h5games，Game provider ID, required

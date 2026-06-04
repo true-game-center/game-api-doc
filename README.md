@@ -2,7 +2,7 @@
 
 **Target Audience:** Client developers, Server developers, QA  
 **Last Updated:** 2026-06-04  
-**Document Version:** V1.3.0
+**Document Version:** V1.3.1
 
 ---
 
@@ -340,6 +340,71 @@ Returns game order metrics for one user from `game_order_collection`. Amounts ar
   }
 }
 ```
+
+---
+
+### 4.7 Game Order Statistics
+
+- **Method:** `POST`
+- **Path:** `/oapi/game-order/stat`
+
+Returns game order statistics from the target game proxy. When `supplierId` is provided, Game Center routes the request by the local game supplier configuration and maps returned platform game IDs back to local game dimensions.
+
+**Request Body**
+
+```json
+{
+  "kolUserId": 11012184,
+  "supplierId": 1494326540744264616,
+  "currency": "GOLD",
+  "groupId": "DEF",
+  "beginTime": "2026-06-01 00:00:00",
+  "endTime": "2026-06-01 23:59:59",
+  "isSettle": 1,
+  "state": 1,
+  "timeZone": 0,
+  "gameInfo": {
+    "category": "0",
+    "providerId": "1494326540744264616",
+    "gameId": "101891"
+  },
+  "page": 1,
+  "size": 100
+}
+```
+
+`supplierId` is the local Game Center supplier ID. For backward compatibility, `gameInfo.localGameProviderId` or a local supplier ID in `gameInfo.providerId` can also be used for supplier-scoped routing.
+
+**Response Body**
+
+```json
+{
+  "success": true,
+  "errCode": "0",
+  "errMessage": "success",
+  "data": {
+    "total": 100,
+    "totalBetScore": 10000.00000000,
+    "totalSettleScore": 8500.00000000,
+    "totalValidScore": 9200.00000000,
+    "list": [
+      {
+        "gameId": 1497254068404215812,
+        "gameSupplierId": 1494326540744264616,
+        "gameCategoryId": 1494326540744264617,
+        "groupId": "DEF",
+        "currency": "GOLD",
+        "betScore": 100.00000000,
+        "settleScore": 85.00000000,
+        "validScore": 92.00000000,
+        "userId": 11011234
+      }
+    ]
+  }
+}
+```
+
+If the supplier or game configuration cannot be resolved, the API returns an empty statistics response with `total = 0`.
 
 ---
 

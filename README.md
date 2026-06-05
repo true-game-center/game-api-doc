@@ -1,7 +1,7 @@
 # Game Center Integration Guide
 
-**Target Audience:** Client developers, Server developers, QA  
-**Last Updated:** 2026-06-04  
+**Target Audience:** Client developers, Server developers, QA<br>
+**Last Updated:** 2026-06-05<br>
 **Document Version:** V1.3.0
 
 ---
@@ -430,10 +430,12 @@ The following APIs are implemented and exposed by the game side for Game Center 
 
 ---
 
-### 5.3 Query Order Detail Interface
+### 5.3 Query Order Detail Interface (Deprecated)
 
 - **Method:** `POST`
 - **Path:** `/game-proxy/game/order/detail`
+
+> Deprecated. This interface returns the order detail URL string. Do not use it for new integrations.
 
 **Request Headers**
 
@@ -463,7 +465,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
 {
   "jsonrpc": "2.0",
   "id": "req-001",
-  "result": "https://sfdsfd.com",
+  "result": "https://sfdsfd.com",  // Order detail URL
   "error": null
 }
 ```

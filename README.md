@@ -2,7 +2,7 @@
 
 **Target Audience:** Client developers, Server developers, QA<br>
 **Last Updated:** 2026-06-05<br>
-**Document Version:** V1.3.1
+**Document Version:** V1.3.0
 
 ---
 
@@ -281,58 +281,6 @@ Returns the last 5 games played by a user from `game_order_collection`, then gro
 ```
 
 If a game has no settled win or lose records in a window, the corresponding amount is `0`.
-
----
-
-### 4.6 User Game Task Statistics
-
-- **Method:** `POST`
-- **Path:** `/oapi/game-order-collection/getUserGameTaskStat`
-
-Returns task statistics for one user and one game from `game_order_collection` in the requested time range.
-
-**Calculation Rules**
-
-| Field | Rule |
-|-------|------|
-| Time filter | Based on `bet_time`, inclusive start and end |
-| `gamePayoutAmount` | `sum(settle_score)`; converted by the A0 currency unit before summing |
-| `gameBetAmount` | `sum(bet_score)`; converted by the A0 currency unit before summing |
-| `gameWinCount` | `count(order_status = 1)` |
-
-**Request Body**
-
-```json
-{
-  "kolUserId": 11012184,
-  "userId": 11011234,
-  "gameid": 1497254068404215812,
-  "beginTime": 1780488000000,
-  "endTime": 1780574399000
-}
-```
-
-`a0` can be used instead of `kolUserId`. `userid` and `user_id` are accepted as aliases for `userId`. `gameId`, `gameid`, and `game_id` are accepted for the game id. `beginTime` and `endTime` are millisecond timestamps.
-
-**Response Body**
-
-```json
-{
-  "success": true,
-  "errCode": "0",
-  "errMessage": "success",
-  "data": {
-    "kolUserId": 11012184,
-    "userId": 11011234,
-    "gameId": 1497254068404215812,
-    "gamePayoutAmount": 120.50000000,
-    "gameBetAmount": 100.00000000,
-    "gameWinCount": 3
-  }
-}
-```
-
-If no matching records exist, amount fields are `0` and `gameWinCount` is `0`.
 
 ---
 

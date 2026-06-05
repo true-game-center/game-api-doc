@@ -2,7 +2,7 @@
 
 **Target Audience:** Client developers, Server developers, QA<br>
 **Last Updated:** 2026-06-05<br>
-**Document Version:** V1.3.0
+**Document Version:** V1.3.1
 
 ---
 
@@ -418,7 +418,10 @@ The following APIs are implemented and exposed by the game side for Game Center 
         "settleTime": "YYYY-MM-DD HH:mm:ss",  // Settle time
         "groupId": "2322",  // Group ID
         "isSettle": 0,  // Is settled: 0=No 1=Yes (state 1,2,3)
-        "gameInfo": {}
+        "gameInfo": {},
+        "dataset": "default",  // Passthrough dataset from enter game, optional, can be null when proxy does not support it
+        "enableJackpot": 1,  // Enable JackPot: 0=No 1=Yes, optional, can be null when proxy does not support it
+        "ext": "||1499486369695664870|74|||null_4030004|"  // Passthrough string from enter game, optional, can be null when proxy does not support it
       }
     ]
   },

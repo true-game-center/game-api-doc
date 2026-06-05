@@ -112,7 +112,7 @@ This document describes the integration between the game side and Game Center (G
     "score": 999.00,  // Score/points
     "transactionId": "23424324324",  // Transaction ID
     "opType": "debit",  // debit / credit / return (cancel-refund) / gift
-    "currency": "GOLD"  // Currency: GOLD=free, VND/USD=real money
+    "currency": "GOLD"  // Currency: GOLD=free, VND/USD=real money, FAM=family coin
   }
 }
 ```
@@ -129,7 +129,7 @@ This document describes the integration between the game side and Game Center (G
   "result": {
     "a0": 100841,
     "userId": 100821,  // User ID
-    "currency": "GOLD",  // Currency
+    "currency": "GOLD",  // Currency; FAM=family coin
     "score": "100.00"  // Amount
   },
   "error": null
@@ -201,7 +201,7 @@ This document describes the integration between the game side and Game Center (G
   "params": {
     "a0": "1111111",  // Root agent
     "userId": 123123,  // User ID
-    "currency": "GOLD",  // Currency: GOLD=free, VND/USD=real money
+    "currency": "GOLD",  // Currency: GOLD=free, VND/USD=real money, FAM=family coin
     "gameInfo": {} // gameInfo object
   }
 }
@@ -217,7 +217,7 @@ This document describes the integration between the game side and Game Center (G
   "result": {
     "a0": 100841,  // Root agent
     "userId": 100821,  // User ID
-    "currency": "GOLD",  // Currency: GOLD=free, VND/USD=real money
+    "currency": "GOLD",  // Currency: GOLD=free, VND/USD=real money, FAM=family coin
     "score": "100.00"  // Amount
   },
   "error": null
@@ -303,7 +303,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
   "params": {
     "a0": 19191,  // Root agent, required
     "userIds": [199817, 12123],  // User IDs, optional
-    "currency": "GOLD",  // Currency, required
+    "currency": "GOLD",  // Currency, required; FAM=family coin
     "isSettle": 0,  // Is settled: 0=No 1=Yes, optional
     "state": [],  // State 0,1,2,3,4,5,7, optional
     "gameInfo": {
@@ -337,7 +337,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
       {
         "gameId": "1",  // Game ID
         "groupId": "1",  // Room/group ID
-        "currency": "RMB",  // Currency
+        "currency": "RMB",  // Currency; FAM=family coin
         "betScore": 100.0,  // Bet amount
         "settleScore": 100.0,  // Payout amount
         "validScore": 100.0,  // Valid bet
@@ -373,7 +373,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
     "orderId": "1213123213",  // Order ID, optional
     "a0": 19191,  // Root node ID, required
     "userId": 199817,  // User ID, optional
-    "currency": "GOLD",  // Currency, required
+    "currency": "GOLD",  // Currency, required; FAM=family coin
     "state": [0],  // State: 0 Unsettled, 1 Win, 2 Draw, 3 Loss, 4 User Cancelled, 5 System Cancelled, 7 Abnormal, optional
     "gameInfo": {
         "category": "0",  // Game category ID, optional
@@ -409,7 +409,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
         "userId": "324324",  // User ID
         "gameId": "1",  // Game ID
         "orderId": "2342342",  // Order ID
-        "currency": "GOLD",  // Currency
+        "currency": "GOLD",  // Currency; FAM=family coin
         "betTime": "YYYY-MM-DD HH:mm:ss",  // Bet time
         "state": 1,  // State: 0 Unsettled, 1 Win, 2 Draw, 3 Loss, 4 User Cancelled, 5 System Cancelled, 7 Abnormal
         "betScore": 100.0,  // Bet amount
@@ -453,7 +453,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
   "params": {
     "orderId": "1213123213",
     "language": "CN",
-    "currency": "CNY",
+    "currency": "CNY",  // Currency; FAM=family coin
     "gameInfo": { "category": "0", "providerId": "1", "gameId": "101891" }
   }
 }
@@ -495,7 +495,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
     "token": "sdfdsfdsfsd",  // User token, required
     "device": "PC",  // Terminal, required: PC, H5
     "language": "zh-CN",  // Language, required
-    "currency": "GOLD",  // Currency, required
+    "currency": "GOLD",  // Currency, required; FAM=family coin
     "groupId": "1000",  // Group ID, default DEF, optional; required when isGroupTrace=1
     "isGroupTrace": 0,  // 0=No tracking (default), 1=Tracking (must set groupId)
     "isDemo": 0,  // Is demo: 0=No 1=Yes, required
@@ -599,7 +599,7 @@ Returns paginated data. Example:
         "betTime": "string",
         "settleTime": "string",
         "gameInfo": "string",
-        "currency": "string"
+        "currency": "string"  // Currency; FAM=family coin
       }
     ]
   },
@@ -615,6 +615,7 @@ Returns paginated data. Example:
 | effectScore  | Valid bet      |
 | settleScore  | Settle amount  |
 | status       | Order status   |
+| currency     | Currency; FAM=family coin |
 
 ---
 
@@ -641,7 +642,7 @@ Returns paginated data. Example:
     "userId": 199817,
     "device": "PC",
     "language": "CN",
-    "currency": "RNB",
+    "currency": "RNB",  // Currency; FAM=family coin
     "groupId": "were",
     "gameInfo": { "category": "0", "providerId": "1", "gameId": "101891" }
   }

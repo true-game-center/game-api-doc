@@ -1,7 +1,7 @@
 # Game Center Integration Guide
 
 **Target Audience:** Client developers, Server developers, QA<br>
-**Last Updated:** 2026-06-05<br>
+**Last Updated:** 2026-06-08<br>
 **Document Version:** V1.3.1
 
 ---
@@ -505,6 +505,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
     "limitConfigId": co2, // 现红配置，no required
     "dataset": "default", // 透传给游戏服务方的数据集，no required
     "enableJackpot": 1, // 是否启用 JackPot：0 不启用，1 启用，no required
+    "ulc": "02", // 用户生命周期代码，透传给游戏服务方，no required
     "ext": "||1499486369695664870|74|||null_4030004|", // 透传字符串参数，no required
     "gameInfo": {
         "category": "0",  // Game category ID, required
@@ -515,6 +516,16 @@ The following APIs are implemented and exposed by the game side for Game Center 
   }
 }
 ```
+
+#### `ulc` Code Definition
+
+| User Lifecycle | Code |
+|----------------|------|
+| D0-D2: 新用户 | `02` |
+| D3-D6: 次新用户 | `36` |
+| D7-D14: 成长期用户 | `714` |
+| D15-D30: 稳定期用户 | `1530` |
+| D31+: 成熟用户 | `3100` |
 
 **Response Body**
 

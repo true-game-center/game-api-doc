@@ -1,8 +1,8 @@
 # Game Center Integration Guide
 
 **Target Audience:** Client developers, Server developers, QA<br>
-**Last Updated:** 2026-06-08<br>
-**Document Version:** V1.3.1
+**Last Updated:** 2026-06-09<br>
+**Document Version:** V1.3.2
 
 ---
 
@@ -34,6 +34,7 @@ This document describes the integration between the game side and Game Center (G
 ## Related Documents
 
 - [A0 Game Service Config API](./game-a0-service-config.md)
+- [Game Supplier Management API](./game-supplier.md)
 
 ---
 

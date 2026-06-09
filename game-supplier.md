@@ -65,3 +65,5 @@ When a score change reaches Game Center and the local supplier can be resolved:
 2. Otherwise, Game Center keeps the existing A0 service routing: it resolves `game_a0_service_config` by `kolUserId + BALANCE`, then falls back to the default `game-core.oapi.token.url` when no A0 config exists.
 
 The JWT token generation still follows the existing A0 `BALANCE` configuration.
+
+For `/game-proxy/user/score/change`, Game Center forwards optional passthrough fields `dataset`, `enableJackpot`, and `ext` unchanged in the downstream `/oapi/score/cost` request body.

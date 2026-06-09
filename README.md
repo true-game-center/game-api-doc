@@ -113,12 +113,17 @@ This document describes the integration between the game side and Game Center (G
     "score": 999.00,  // Score/points
     "transactionId": "23424324324",  // Transaction ID
     "opType": "debit",  // debit / credit / return (cancel-refund) / gift
-    "currency": "GOLD"  // Currency: GOLD=free, VND/USD=real money, FAM=family coin
+    "currency": "GOLD",  // Currency: GOLD=free, VND/USD=real money, FAM=family coin
+    "dataset": "default",  // Passthrough dataset to the A0 score service, optional
+    "enableJackpot": 1,  // Enable JackPot: 0=No 1=Yes, optional
+    "ext": "||1499486369695664870|74|||null_4030004|"  // Passthrough string to the A0 score service, optional
   }
 }
 ```
 
 (opType: debit / credit / return for cancel-refund / gift for direct bonus credit. `gift` is mapped to internal opType `3`; `score` must be greater than 0.)
+
+`dataset`, `enableJackpot`, and `ext` are optional passthrough fields. Game Center forwards them unchanged to the downstream `/oapi/score/cost` request after routing by `a0`/`kolUserId` and `BALANCE` service configuration.
 
 **Response Body**
 

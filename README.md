@@ -347,7 +347,8 @@ The following APIs are implemented and exposed by the game side for Game Center 
         "betScore": 100.0,  // Bet amount
         "settleScore": 100.0,  // Payout amount
         "validScore": 100.0,  // Valid bet
-        "userId": 100211  // User ID
+        "userId": 100211,  // User ID
+        "recordCount": 2  // Number of original orders aggregated into this grouped row (group key: userId|gameId|groupId|currency); must be > 0 when the group has orders
       }
     ]
   },

@@ -111,7 +111,9 @@ This document describes the integration between the game side and Game Center (G
     "category": "0",  // Game category ID
     "providerId": "1",  // Game provider ID
     "gameId": "181818",  // Game ID
-    "score": 999.00,  // Score/points
+    "cost": 10.00, // cost value
+    "win": 999.00,  // return value
+    "score": 999.00,  // Score/points, if cost step, it equals to costt, if settle step it equals to win.
     "transactionId": "23424324324",  // Transaction ID
     "opType": "debit",  // debit / credit / return (cancel-refund) / gift
     "currency": "GOLD",  // Currency: GOLD=free, VND/USD=real money, FAM=family coin

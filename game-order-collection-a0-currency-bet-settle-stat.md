@@ -23,7 +23,9 @@ All `/oapi/**` requests must include a `token` header.
 ```json
 {
   "kolUserId": 11012184,
-  "currency": "USD"
+  "currency": "USD",
+  "beginTime": 1780488000000,
+  "endTime": 1780574399000
 }
 ```
 
@@ -31,13 +33,16 @@ All `/oapi/**` requests must include a `token` header.
 | --- | --- | --- | --- |
 | kolUserId | Long | Yes | A0 user ID, mapped to `game_order_collection.kol_user_id`. Alias `a0` is also accepted. |
 | currency | String | Yes | Order currency, mapped to `game_order_collection.currency`. |
+| beginTime | Long | Yes | Start time as a millisecond timestamp. The filter uses `game_order_collection.bet_time >= beginTime`. |
+| endTime | Long | Yes | End time as a millisecond timestamp. The filter uses `game_order_collection.bet_time <= endTime`. |
 
 ## Calculation Rules
 
 | Field | Rule |
 | --- | --- |
-| betScore | `sum(coalesce(bet_score, 0))` for rows where `kol_user_id = kolUserId` and `currency = currency` |
-| settleScore | `sum(coalesce(settle_score, 0))` for rows where `kol_user_id = kolUserId` and `currency = currency` |
+| Time range | Filter by `game_order_collection.bet_time`, inclusive of both `beginTime` and `endTime` |
+| betScore | `sum(coalesce(bet_score, 0))` for rows where `kol_user_id = kolUserId`, `currency = currency`, and `bet_time` is within the requested range |
+| settleScore | `sum(coalesce(settle_score, 0))` for rows where `kol_user_id = kolUserId`, `currency = currency`, and `bet_time` is within the requested range |
 
 The response returns raw amounts in the requested order currency. It does not apply A0 currency-unit conversion.
 

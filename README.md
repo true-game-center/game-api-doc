@@ -2,7 +2,7 @@
 
 **Target Audience:** Client developers, Server developers, QA<br>
 **Last Updated:** 2026-06-10<br>
-**Document Version:** V1.3.3
+**Document Version:** V1.3.4
 
 ---
 
@@ -36,6 +36,29 @@ This document describes the integration between the game side and Game Center (G
 - [A0 Game Service Config API](./game-a0-service-config.md)
 - [Game Supplier Management API](./game-supplier.md)
 - [User Bet Existence API](./game-order-exists.md)
+
+---
+
+<a id="order-linking-ids"></a>
+## 订单串联标识（Round / Transaction / Tick）
+
+> **第一阶段（Phase 1）。** 本节在现有模型基础上做最小扩展，目的是把「下注」与「派彩」串联起来、让对账闭环，暂不引入会话级（session）追踪，详见下方[后续规划](#roadmap-phase-2)。
+
+当前对接已携带 `transactionId`（在 `user.score.change` 上）以及结算后产生的 `orderId`。缺口在于：下注那一刻没有任何字段把这笔**下注**和它后续的**派彩/结算**关联起来，且钱包侧的 `transactionId` 没有回传到订单查询/采集接口的响应里，导致两边对不上账。第一阶段用「三个新增字段 + 一处暴露」补齐：
+
+| 字段 | 现状 | 第一阶段 |
+|------|------|----------|
+| `roundId` | ❌ 只有结算后才产生的 `orderId` | **新增**（可选）。一个回合 / 一次旋转 / 一手牌 / 一张注单。同一回合的扣款与其后续派彩/退款共用同一个 `roundId`，是对账锚点；`orderId` 是某个 `roundId` 结算后的订单视图。 |
+| `tickId` | ❌ 无 | **新增**（可选）。一笔交易 / 一个回合内的最细子事件（如捕鱼每一炮、连续游戏的每一步）。仅 tick 型游戏需要，普通 slot 可不传。 |
+| `transactionId` | ✅ 仅 `score.change` 有 | **暴露**到 `order.query`（5.2）与 `order.collect`（5.5）响应中，使钱包流水与订单记录可对上。仍是幂等键——同一个值不得重复扣费。 |
+| `refTransactionId` | ⚠️ 只有 `opType: return`，没有指回原单 | **新增**（可选）。`return` 携带其所冲正的原 `transactionId`。账本只追加（append-only），纠错用反向流水，绝不原地修改。 |
+| `groupId` | ✅ 已有 | 不变 |
+| 业务细节 | ✅ 走 `ext`（透传） | 不变——体育投注项、彩票开奖号、slot 转轴、jackpot 档位等继续放 `ext`，不新增顶层字段 |
+
+所有新增字段均为**可选**：尚未产出 `roundId` 的供应商可照旧运行。供应商应优先在扣款和派彩两侧带上同一个稳定的 `roundId`。
+
+<a id="roadmap-phase-2"></a>
+**后续规划（Phase 2，暂未实现）：** 在 `roundId` 之上再叠一层 `sessionId`（登录会话）→ `gameSessionId`（单游戏会话）的包裹。该层需要会话追踪基础设施，待有明确需求再上，避免现在就强制所有供应商接入。
 
 ---
 
@@ -111,10 +134,13 @@ This document describes the integration between the game side and Game Center (G
     "category": "0",  // Game category ID
     "providerId": "1",  // Game provider ID
     "gameId": "181818",  // Game ID
+    "roundId": "R-77f0a1",  // 回合 ID，串联本次下注与其后续派彩/退款；可选，建议传
     "cost": 10.00, // cost value
     "win": 999.00,  // return value
     "score": 999.00,  // Score/points, if cost step, it equals to costt, if settle step it equals to win.
-    "transactionId": "23424324324",  // Transaction ID
+    "transactionId": "23424324324",  // 交易 ID，幂等键，同一值不得重复扣费
+    "refTransactionId": "23424324300",  // 本条所冲正的原 transactionId；opType=return 时必填，否则省略
+    "tickId": "T-001",  // tick 子事件 ID，最细粒度；可选，仅 tick 型游戏（如捕鱼）需要
     "opType": "debit",  // debit / credit / return (cancel-refund) / gift
     "currency": "GOLD",  // Currency: GOLD=free, VND/USD=real money, FAM=family coin
     "dataset": "default",  // Passthrough dataset to the A0 score service, optional
@@ -127,6 +153,8 @@ This document describes the integration between the game side and Game Center (G
 (opType: debit / credit / return for cancel-refund / gift for direct bonus credit. `gift` is mapped to internal opType `3`; `score` must be greater than 0.)
 
 `dataset`, `enableJackpot`, and `ext` are optional passthrough fields. Game Center forwards them unchanged to the downstream `/oapi/score/cost` request after routing by `a0`/`kolUserId` and `BALANCE` service configuration.
+
+`roundId`、`refTransactionId`、`tickId` 属于[订单串联标识](#order-linking-ids)：同一回合的扣款（`opType: debit`）与其后续派彩（`opType: credit`）必须携带相同的 `roundId`；`return` 必须把 `refTransactionId` 设为它所冲正的 `transactionId`。`tickId` 仅 tick 型游戏需要。
 
 **Response Body**
 
@@ -420,7 +448,10 @@ The following APIs are implemented and exposed by the game side for Game Center 
         "a0": "12313",
         "userId": "324324",  // User ID
         "gameId": "1",  // Game ID
-        "orderId": "2342342",  // Order ID
+        "orderId": "2342342",  // Order ID（某个 roundId 结算后的订单视图）
+        "roundId": "R-77f0a1",  // 回合 ID，下注与结算共用；可选，proxy 不支持时可为 null
+        "transactionId": "23424324324",  // 结算交易 ID；可选，proxy 不支持时可为 null
+        "tickId": "T-001",  // tick 子事件 ID；可选，proxy 不支持时可为 null
         "currency": "GOLD",  // Currency; FAM=family coin
         "betTime": "YYYY-MM-DD HH:mm:ss",  // Bet time
         "state": 1,  // State: 0 Unsettled, 1 Win, 2 Draw, 3 Loss, 4 User Cancelled, 5 System Cancelled, 7 Abnormal
@@ -618,6 +649,9 @@ Returns paginated data. Example:
         "gameId": "string",
         "groupId": "string",
         "orderId": "string",
+        "roundId": "string",
+        "transactionId": "string",
+        "tickId": "string",
         "betScore": "string",
         "effectScore": "string",
         "settleScore": "string",
@@ -635,13 +669,16 @@ Returns paginated data. Example:
 
 | Field        | Description    |
 |--------------|----------------|
-| total        | Total count    |
-| list         | Order list     |
-| betScore     | Bet amount     |
-| effectScore  | Valid bet      |
-| settleScore  | Settle amount  |
-| status       | Order status   |
-| currency     | Currency; FAM=family coin |
+| total          | Total count    |
+| list           | Order list     |
+| roundId        | 回合 ID，下注与结算共用 |
+| transactionId  | 结算交易 ID |
+| tickId         | tick 子事件 ID |
+| betScore       | Bet amount     |
+| effectScore    | Valid bet      |
+| settleScore    | Settle amount  |
+| status         | Order status   |
+| currency       | Currency; FAM=family coin |
 
 ---
 

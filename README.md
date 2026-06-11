@@ -340,6 +340,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
   "result": {
     "total": 100,  // Total count
     "totalBetScore": 0,  // Total bet amount
+    "totalUserCount": 0,  // Distinct user count
     "totalSettleScore": 0,  // Total settle amount
     "totalValidScore": 0,  // Total valid bet amount
     "list": [
@@ -411,6 +412,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
   "result": {
     "total": 100,  // Total count
     "totalBetScore": 0,  // Total bet amount
+    "totalUserCount": 0,  // Distinct user count
     "totalSettleScore": 0,  // Total settle amount
     "totalValidScore": 0,  // Total valid bet amount
     "list": [

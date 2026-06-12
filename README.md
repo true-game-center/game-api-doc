@@ -269,13 +269,23 @@ This document describes the integration between the game side and Game Center (G
 - **Method:** `POST`
 - **Path:** `/oapi/game-order-collection/getUserRecentGameWinLossStat`
 
-Returns the last 5 games played by a user from `game_order_collection`, then groups each game's settled records into win and lose buckets. Each bucket includes the net payout difference for the last 15 minutes and last 24 hours.
+Returns two groups of user game statistics from `game_order_collection`:
+
+- `windows`: the user's recent 3/14/30/60/90/180 day totals, used for the "recent N days game rounds / valid diamonds / win-loss" row.
+- `games`: the last 5 games played by the user, used for the "last played games / valid diamonds / win-loss" row. Each game also keeps the existing win and lose buckets for the last 15 minutes and last 24 hours.
 
 **Calculation Rules**
 
 | Field | Rule |
 |-------|------|
+| Recent day windows | Fixed windows: 3, 14, 30, 60, 90, 180 days |
+| Recent day range | `[today 00:00 - N days, today 00:00)`, based on game-center server time; today is not included |
+| Game rounds | `COUNT(*)` from `game_order_collection` |
+| Valid diamonds | `SUM(valid_bet_score)`; converted by the A0 currency unit before summing |
+| Window win-loss | For settled records, `settle_score - bet_score`; converted by the A0 currency unit before summing |
 | Last played games | Top 5 distinct `game_id` ordered by `MAX(bet_time)` desc |
+| Last played game valid diamonds | `SUM(valid_bet_score)` for all records of the game up to request processing time; response field is `historyBetAmount` for backward compatibility |
+| Last played game win-loss | For settled records, `settle_score - bet_score`; response field is `historyDiffAmount` |
 | Win bucket | `order_status = 1` |
 | Lose bucket | `order_status = 3` |
 | Time windows | Based on `bet_time`, relative to request processing time |
@@ -300,10 +310,26 @@ Returns the last 5 games played by a user from `game_order_collection`, then gro
   "errCode": "0",
   "errMessage": "success",
   "data": {
+    "windows": [
+      {
+        "days": 3,
+        "gameRoundCount": 27,
+        "validBetAmount": 2080.00000000,
+        "winLossAmount": -182.45000000
+      },
+      {
+        "days": 14,
+        "gameRoundCount": 95,
+        "validBetAmount": 7160.00000000,
+        "winLossAmount": 322.78800000
+      }
+    ],
     "games": [
       {
         "gameId": 1497254068404215812,
         "lastBetTime": "2026-05-27T17:30:57",
+        "historyBetAmount": 712.00000000,
+        "historyDiffAmount": 41.53000000,
         "win": {
           "last15MinutesDiffAmount": 110.53100000,
           "last24HoursDiffAmount": 322.78800000
@@ -318,7 +344,7 @@ Returns the last 5 games played by a user from `game_order_collection`, then gro
 }
 ```
 
-If a game has no settled win or lose records in a window, the corresponding amount is `0`.
+All six `windows` entries are returned even when the user has no records in a window. If a game has no settled win or lose records in a bucket, the corresponding amount is `0`.
 
 ---
 

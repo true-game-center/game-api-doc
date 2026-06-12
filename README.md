@@ -36,6 +36,7 @@ This document describes the integration between the game side and Game Center (G
 - [A0 Game Service Config API](./game-a0-service-config.md)
 - [Game Supplier Management API](./game-supplier.md)
 - [User Bet Existence API](./game-order-exists.md)
+- [User Game Play Count API](./game-order-collection-user-game-play-count.md)
 
 ---
 

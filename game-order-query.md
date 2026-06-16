@@ -76,10 +76,17 @@
 | language | String | No | Body 级语言参数；Header 中的 `language` 会覆盖该值 |
 | isGetDetail | Integer | No | 是否返回订单详情：`0` 否，`1` 是 |
 | timeZone | Integer | No | 时间戳转换时区：`0` 北京/新加坡，`1` 美东，`2` 不转换场景 |
-| timeType | Integer | No | 当未传 `beginTime` 时可用：`0` 最近 1 天，`1` 最近 3 天，`3` 最近 7 天，`4` 最近 30 天 |
+| timeType | Integer | No | 当未传 `beginTime` 时可用：`0` 全部时间；正整数 `N` 表示最近 `N` 天到当前时间，例如 `1` 最近 1 天、`3` 最近 3 天、`7` 最近 7 天、`30` 最近 30 天 |
 | hasStat | Integer | No | 是否查询统计：`0` 否，`1` 是；仅当 `currency` 非空时返回金额统计 |
 | page | Integer | No | 页码 |
 | size | Integer | No | 每页数量 |
+
+## timeType 快捷时间过滤
+
+`timeType` 只在未传 `beginTime` 时生效；如果同时传入 `beginTime` 或 `createTimeStart`，以显式时间参数为准。
+
+- `timeType=0`：全部时间，不追加下注时间过滤。
+- `timeType=N` 且 `N > 0`：查询最近 `N` 天到当前时间，服务端自动生成 `beginTime=now-N天`、`endTime=now`。
 
 ## 结算时间过滤
 

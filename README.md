@@ -1,8 +1,8 @@
 # Game Center Integration Guide
 
 **Target Audience:** Client developers, Server developers, QA<br>
-**Last Updated:** 2026-06-10<br>
-**Document Version:** V1.3.4
+**Last Updated:** 2026-06-16<br>
+**Document Version:** V1.3.5
 
 ---
 
@@ -36,7 +36,9 @@ This document describes the integration between the game side and Game Center (G
 - [A0 Game Service Config API](./game-a0-service-config.md)
 - [Game Supplier Management API](./game-supplier.md)
 - [User Bet Existence API](./game-order-exists.md)
+- [User Bet Existence OAPI](./game-order-collection-exists-order.md)
 - [User Game Play Count API](./game-order-collection-user-game-play-count.md)
+- [Game Order Query OAPI](./game-order-query.md)
 
 ---
 
@@ -269,17 +271,23 @@ This document describes the integration between the game side and Game Center (G
 - **Method:** `POST`
 - **Path:** `/oapi/game-order-collection/getUserRecentGameWinLossStat`
 
-Returns the last 5 games played by a user from `game_order_collection`, then groups each game's settled records into win and lose buckets. Each bucket includes the net payout difference for the last 15 minutes and last 24 hours.
+Returns user-level recent game statistics from `game_order_collection`:
+
+- `windows`: fixed historical windows for the user.
+- `games`: the last 5 games played by the user, ordered by latest `bet_time`.
 
 **Calculation Rules**
 
 | Field | Rule |
 |-------|------|
-| Last played games | Top 5 distinct `game_id` ordered by `MAX(bet_time)` desc |
-| Win bucket | `order_status = 1` |
-| Lose bucket | `order_status = 3` |
-| Time windows | Based on `bet_time`, relative to request processing time |
-| Difference amount | `settle_score - bet_score`; converted by the A0 currency unit before summing |
+| Last played games | Top 5 distinct `game_id` ordered by `MAX(bet_time)` desc, using rows with `bet_time <= request time` |
+| Win bucket | Settled rows where `order_status = 1` |
+| Lose bucket | Settled rows where `order_status = 3` |
+| 15-minute / 24-hour game buckets | Based on `bet_time`, relative to request processing time |
+| `historyBetAmount` | All historical `sum(valid_bet_score)` for the game and user up to request time |
+| `historyDiffAmount` | All historical settled `sum(settle_score - bet_score)` for the game and user up to request time |
+| `windows` | Fixed day windows `[3, 14, 30, 60, 90, 180]`; each range is `[today 00:00 - days, today 00:00)`, not including today |
+| Amount conversion | Amounts are converted by the A0 currency unit when a matching currency unit config exists |
 
 **Request Body**
 
@@ -300,10 +308,26 @@ Returns the last 5 games played by a user from `game_order_collection`, then gro
   "errCode": "0",
   "errMessage": "success",
   "data": {
+    "windows": [
+      {
+        "days": 3,
+        "gameRoundCount": 18,
+        "validBetAmount": 1200.00000000,
+        "winLossAmount": -86.25000000
+      },
+      {
+        "days": 14,
+        "gameRoundCount": 66,
+        "validBetAmount": 5200.00000000,
+        "winLossAmount": 315.75000000
+      }
+    ],
     "games": [
       {
-        "gameId": 1497254068404215812,
-        "lastBetTime": "2026-05-27T17:30:57",
+        "gameId": "1497254068404215812",
+        "lastBetTime": 1782549057000,
+        "historyBetAmount": 9800.00000000,
+        "historyDiffAmount": 128.44000000,
         "win": {
           "last15MinutesDiffAmount": 110.53100000,
           "last24HoursDiffAmount": 322.78800000
@@ -318,7 +342,7 @@ Returns the last 5 games played by a user from `game_order_collection`, then gro
 }
 ```
 
-If a game has no settled win or lose records in a window, the corresponding amount is `0`.
+When a fixed day window has no matching rows, `gameRoundCount`, `validBetAmount`, and `winLossAmount` are `0`. If a recent game has no settled win or lose records in a 15-minute or 24-hour bucket, the corresponding amount is `0`.
 
 ---
 

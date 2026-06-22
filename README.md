@@ -103,7 +103,7 @@ This document describes the integration between the game side and Game Center (G
     "userId": 100821,  // User ID
     "avatar": "https:// pbtest.buyacard.cc/img/user/avatar/a.png",  // Avatar
     "nickname": "",  // Nickname
-    "gender": 1  // Gender: 0 Unknown, 1 Male, 2 Female
+    "gender": 1  // Gender: 0 Unknown, 1 Male, 2 Female， null 未设置
   },
   "error": null
 }

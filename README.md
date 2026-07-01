@@ -367,7 +367,7 @@ The following APIs are implemented and exposed by the game side for Game Center 
   "params": {
     "a0": 19191,  // Root agent, required
     "userIds": [199817, 12123],  // User IDs, optional
-    "currency": "GOLD",  // Currency, required; FAM=family coin
+    "currency": "GOLD",  // Currency, optional; FAM=family coin，当不指定这个字段时，按照currency group并返回所有数据
     "isSettle": 0,  // Is settled: 0=No 1=Yes, optional
     "state": [],  // State 0,1,2,3,4,5,7, optional
     "gameInfo": {

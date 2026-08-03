@@ -374,7 +374,7 @@ agregate by userid, currency, and gameid as one record to response
     "state": [],  // State 0,1,2,3,4,5,7, optional
     "gameInfo": {
         "category": "0",  // Game category ID, optional
-        "providerId": "1",  // Game provider ID, required
+        "providerId": "1",  // Game provider ID, optional
         "gameId": "101891"  // Game ID, optional
     },
     "groupId": "DEF",  // groupId, default DEF, optional

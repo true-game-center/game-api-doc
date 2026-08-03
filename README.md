@@ -354,6 +354,8 @@ The following APIs are implemented and exposed by the game side for Game Center 
 
 ### 5.1 Query Game Statistics Interface
 
+agregate by userid, currency, and gameid as one record to response
+
 - **Method:** `POST`
 - **Path:** `/game-proxy/game/order/stat`
 
